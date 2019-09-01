@@ -9,11 +9,14 @@ public class Simulation {
     private static Simulation instance;
     private static boolean initialised = false;
 
+    public boolean isRunning;
+
     private Simulation() {
+        isRunning = true;
         fish = new ArrayList<>();
     }
 
-    public static Simulation getInstance() {
+    public static synchronized Simulation getInstance() {
         if (initialised)
             return instance;
 
@@ -22,16 +25,25 @@ public class Simulation {
         return instance;
     }
 
-    public ArrayList<Fish> getFish() {
+    public synchronized ArrayList<Fish> getFish() {
         return fish;
     }
 
-    public void setFish(ArrayList<Fish> _fish) {
+    public synchronized void setFish(ArrayList<Fish> _fish) {
         this.fish = _fish;
     }
 
-    public void addFish(Fish _fish) {
+    public synchronized void addFish(Fish _fish) {
         this.fish.add(_fish);
+    }
+
+    public synchronized void onProcess() {
+        int count = fish.size();
+
+        // need to update reference to fish
+        for (int i = 0; i < count; i++) {
+            fish.get(i).move();
+        }
     }
     
 }

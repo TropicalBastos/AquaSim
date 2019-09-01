@@ -20,7 +20,21 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                Simulation.getInstance().isRunning = false;
+            }
+        });
+
         setVisible(true);
+        
+        Thread t = new Thread(new UpdateEngine(renderer));
+        t.start();
+    }
+
+    public Renderer getRenderer() {
+        return renderer;
     }
     
 }
