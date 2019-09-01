@@ -7,7 +7,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import com.tropicalbastos.boids.core.Simulation;
 import com.tropicalbastos.boids.core.Window;
-import com.tropicalbastos.boids.objects.Fish;
 
 public class Main {
 
@@ -26,10 +25,8 @@ public class Main {
         Main m = new Main();
         m.setDockIcon();
 
-        // set up our initial simulation
-        Simulation sim = Simulation.getInstance();
-        Fish f = new Fish(0, 0);
-        sim.addFish(f);
+        // create an instance before summoning the main window
+        Simulation.getInstance();
 
         EventQueue.invokeLater(() -> {
             new Window();

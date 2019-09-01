@@ -3,6 +3,7 @@ package com.tropicalbastos.boids.core;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import com.tropicalbastos.boids.objects.Fish;
 
 public class Window extends JFrame {
 
@@ -26,6 +27,11 @@ public class Window extends JFrame {
                 Simulation.getInstance().isRunning = false;
             }
         });
+
+        // set up our initial simulation
+        Simulation sim = Simulation.getInstance();
+        Fish f = new Fish(20, 20, renderer);
+        sim.addFish(f);
 
         setVisible(true);
         
