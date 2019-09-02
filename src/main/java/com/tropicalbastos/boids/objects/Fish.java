@@ -68,9 +68,6 @@ public class Fish {
     // check boundaries and change heading if at the edge
     // returns true if the heading changed
     public boolean checkBoundaries() {
-        if ((System.currentTimeMillis() - lastTimeHeadingChanged) < 500)
-            return true;
-
         int noseX;
         boolean headingChanged = false;
 
@@ -121,7 +118,7 @@ public class Fish {
     public void move() {
         boolean headingChanged = checkBoundaries();
         if (!headingChanged) {
-            if ((System.currentTimeMillis() - lastTimeHeadingChanged) > 2000)
+            if (canChangeHeading())
                 changeHeading(); 
         }
 
@@ -131,7 +128,7 @@ public class Fish {
 
     public BufferedImage flip(BufferedImage image) {
         AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-        tx.translate(-image.getWidth(null), 0);
+        tx.translate(-image.getWidth(), 0);
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 
         try {
@@ -143,13 +140,36 @@ public class Fish {
         }
     }
 
+    public BufferedImage rotateToHeading(BufferedImage image) {
+        AffineTransform tx = new AffineTransform();
+        double radians = heading * (Math.PI / 180);
+        tx.rotate(radians, width, height);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+
+        try {
+            BufferedImage result = op.filter(image, null);
+            return result;
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean canChangeHeading() {
+        return (System.currentTimeMillis() - lastTimeHeadingChanged) > 500;
+    }
+
     public void draw(Graphics g) {
         Sheet sheet = spritesheet.getSheets()[spritesheetIndex];
         BufferedImage clippedDrawable = sprite.getSubimage(sheet.getX(), sheet.getY(), sheet.getWidth(), sheet.getHeight());
 
+        // rotate to the fish's current heading
+        clippedDrawable = rotateToHeading(clippedDrawable);
+
         // anything between headings 90 to 270 then we flip the fish sprite
-        if (heading <= 270 && heading >= 90)
+        if (heading < 270 && heading > 90) {
             clippedDrawable = flip(clippedDrawable);
+        }
 
         Image resultDrawable = clippedDrawable.getScaledInstance(width, height, 0);
 
