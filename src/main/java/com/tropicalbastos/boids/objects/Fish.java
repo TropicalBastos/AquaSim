@@ -126,8 +126,8 @@ public class Fish {
     }
 
     public BufferedImage flip(BufferedImage image) {
-        AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-        tx.translate(-image.getWidth(), 0);
+        AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+        tx.translate(0, -image.getHeight());
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 
         try {
@@ -142,7 +142,7 @@ public class Fish {
     public BufferedImage rotateToHeading(BufferedImage image) {
         AffineTransform tx = new AffineTransform();
         double radians = heading * (Math.PI / 180);
-        tx.rotate(radians, width, height);
+        tx.rotate(radians, image.getWidth() / 2, image.getHeight() / 2);
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 
         try {
