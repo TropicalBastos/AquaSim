@@ -10,7 +10,7 @@ import com.tropicalbastos.boids.objects.Fish;
 public class Renderer extends Canvas {
 
     public Renderer() {
-        setBackground(Color.CYAN);
+        setBackground(new Color(0x006994));
     }
 
     public void pack() {

@@ -105,9 +105,8 @@ public class Fish {
     }
 
     public void changeHeading() {
-        int add = 1;
-        long result = Math.round(Math.random());
-        if (result == add)
+        double rand = Math.random();
+        if (rand > 0.5)
             heading = heading + Math.round(Math.random() * 40);
         else
             heading = heading - Math.round(Math.random() * 40);
@@ -163,13 +162,13 @@ public class Fish {
         Sheet sheet = spritesheet.getSheets()[spritesheetIndex];
         BufferedImage clippedDrawable = sprite.getSubimage(sheet.getX(), sheet.getY(), sheet.getWidth(), sheet.getHeight());
 
-        // rotate to the fish's current heading
-        clippedDrawable = rotateToHeading(clippedDrawable);
-
         // anything between headings 90 to 270 then we flip the fish sprite
         if (heading < 270 && heading > 90) {
             clippedDrawable = flip(clippedDrawable);
         }
+    
+        // rotate to the fish's current heading
+        clippedDrawable = rotateToHeading(clippedDrawable);
 
         Image resultDrawable = clippedDrawable.getScaledInstance(width, height, 0);
 
