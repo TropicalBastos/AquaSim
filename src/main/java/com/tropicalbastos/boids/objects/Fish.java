@@ -16,14 +16,15 @@ public class Fish {
 
     private final int WIDTH = 109;
     private final int HEIGHT = 89;
+    private final long ANIMATION_DELTA = 50; // millieseconds between each sheet change
 
     private int[][] spritesheetData = {{0, 0, WIDTH, HEIGHT}, {109, 0, WIDTH, HEIGHT}, {218, 0, WIDTH, HEIGHT},
                                    {327, 0, WIDTH, HEIGHT}, {436, 0, WIDTH, HEIGHT}, {545, 0, WIDTH, HEIGHT}};
                         
     private Spritesheet spritesheet;
     private int spritesheetIndex;
-    private long animationDelta;
     private BufferedImage sprite;
+    private long lastAnimatedTime;
     public int posX;
     public int posY;
     public long heading;
@@ -40,7 +41,6 @@ public class Fish {
         this.context = context;
         spritesheetIndex = 0;
         speed = 5;
-        animationDelta = System.currentTimeMillis();
         String imgPath = getClass().getClassLoader().getResource("fishsprite.png").getFile();
 
         try {
@@ -57,6 +57,7 @@ public class Fish {
         posY = startPosY;
         heading = 0;
         lastTimeHeadingChanged = 0;
+        lastAnimatedTime = System.currentTimeMillis();
 
         // downscale width/height
         width = (int) (WIDTH * 0.40);
@@ -125,6 +126,18 @@ public class Fish {
         posY += speed * Math.sin(heading * Math.PI / 180);
     }
 
+    public void animate() {
+       if ((System.currentTimeMillis() - lastAnimatedTime) > ANIMATION_DELTA) {
+           if (spritesheetIndex >= spritesheetData.length - 1) {
+               spritesheetIndex = 0;
+           } else {
+               spritesheetIndex++;
+           }
+
+           lastAnimatedTime = System.currentTimeMillis();
+       }
+    }
+
     public BufferedImage flip(BufferedImage image) {
         AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
         tx.translate(0, -image.getHeight());
@@ -159,6 +172,7 @@ public class Fish {
     }
 
     public void draw(Graphics g) {
+        animate();
         Sheet sheet = spritesheet.getSheets()[spritesheetIndex];
         BufferedImage clippedDrawable = sprite.getSubimage(sheet.getX(), sheet.getY(), sheet.getWidth(), sheet.getHeight());
 
