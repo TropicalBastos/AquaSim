@@ -17,6 +17,8 @@ public class Fish {
     private final int WIDTH = 109;
     private final int HEIGHT = 89;
     private final long ANIMATION_DELTA = 50; // millieseconds between each sheet change
+    private final int SPEED = 7;
+    private final int ANGLE_LIMIT = 360;
 
     private int[][] spritesheetData = {{0, 0, WIDTH, HEIGHT}, {109, 0, WIDTH, HEIGHT}, {218, 0, WIDTH, HEIGHT},
                                    {327, 0, WIDTH, HEIGHT}, {436, 0, WIDTH, HEIGHT}, {545, 0, WIDTH, HEIGHT}};
@@ -28,11 +30,15 @@ public class Fish {
     public int posX;
     public int posY;
     public long heading;
+    private long targetHeading;
+    private long targetSpeed;
     private int width;
     private int height;
-    private int speed;
+    private double speed;
     private Renderer context;
     private long lastTimeHeadingChanged;
+    private boolean targetSpeedHit;
+    private boolean targetHeadingHit;
 
     // width of a single sprite not of the entire spritesheet
     private final int singleWidth;
@@ -40,7 +46,7 @@ public class Fish {
     public Fish(int startPosX, int startPosY, Renderer context) {
         this.context = context;
         spritesheetIndex = 0;
-        speed = 5;
+        speed = SPEED;
         String imgPath = getClass().getClassLoader().getResource("fishsprite.png").getFile();
 
         try {
@@ -56,8 +62,12 @@ public class Fish {
         posX = startPosX;
         posY = startPosY;
         heading = 0;
+        targetHeading = heading;
         lastTimeHeadingChanged = 0;
         lastAnimatedTime = System.currentTimeMillis();
+
+        targetSpeedHit = true;
+        targetHeadingHit = true;
 
         // downscale width/height
         width = (int) (WIDTH * 0.40);
@@ -81,11 +91,13 @@ public class Fish {
 
         if (noseX >= context.getWidth()) {
             heading = 180;
+            targetHeading = 180;
             headingChanged = true;
         }
 
         if (noseX < 0) {
             heading = 0;
+            targetHeading = 0;
             headingChanged = true;
         }
 
@@ -96,6 +108,7 @@ public class Fish {
 
         if (posY < 0) {
             heading = 90;
+            targetHeading = 90;
             headingChanged = true;
         }
 
@@ -107,20 +120,49 @@ public class Fish {
 
     public void changeHeading() {
         double rand = Math.random();
-        if (rand > 0.5)
-            heading = heading + Math.round(Math.random() * 40);
-        else
-            heading = heading - Math.round(Math.random() * 40);
+        if (rand > 0.5) {
+            targetHeading = heading + Math.round(Math.random() * 60);
 
+            if (targetHeading > ANGLE_LIMIT) {
+                targetHeading = targetHeading - ANGLE_LIMIT;
+            }
+        } else {
+            targetHeading = heading - Math.round(Math.random() * 60);
+
+            if (targetHeading < 0) {
+                targetHeading = Math.abs(targetHeading);
+                targetHeading = ANGLE_LIMIT - targetHeading;
+            }
+        }
+
+        targetHeading = Math.abs(targetHeading);
+
+        targetHeadingHit = false;
         lastTimeHeadingChanged = System.currentTimeMillis();
+    }
+
+    public void changeSpeed() {
+        // fluctuate speed
+        if (targetSpeedHit) {
+            double rand = Math.random();
+            if (rand >= 0.7) {
+                targetSpeed = SPEED + 4;
+            } else {
+                targetSpeed = SPEED;
+            }
+
+            targetSpeedHit = false;
+        }
     }
 
     public void move() {
         boolean headingChanged = checkBoundaries();
         if (!headingChanged) {
-            if (canChangeHeading())
+            if (canChangeHeading() && targetHeadingHit)
                 changeHeading(); 
         }
+
+        changeSpeed();
 
         posX += speed * Math.cos(heading * Math.PI / 180);
         posY += speed * Math.sin(heading * Math.PI / 180);
@@ -132,6 +174,32 @@ public class Fish {
                spritesheetIndex = 0;
            } else {
                spritesheetIndex++;
+           }
+
+           if (!targetHeadingHit) {
+                if (targetHeading != heading) {
+                    if (heading >= (targetHeading + 10)) {
+                        heading -= 10;
+                    } else if (heading <= (targetHeading - 10)) {
+                        heading += 10;
+                    } else {
+                        heading = targetHeading;
+                    }
+                } else {
+                    targetHeadingHit = true;
+                }
+            }
+
+           if (!targetSpeedHit) {
+                if ((int) targetSpeed != (int) speed) {
+                    if (speed < targetSpeed) {
+                        speed += 0.1;
+                    } else if (speed > targetSpeed) {
+                        speed -= 0.1;
+                    }
+                } else {
+                    targetSpeedHit = true;
+                }
            }
 
            lastAnimatedTime = System.currentTimeMillis();
