@@ -40,9 +40,6 @@ public class Fish {
     private boolean targetSpeedHit;
     private boolean targetHeadingHit;
 
-    // width of a single sprite not of the entire spritesheet
-    private final int singleWidth;
-
     public Fish(int startPosX, int startPosY, Renderer context) {
         this.context = context;
         spritesheetIndex = 0;
@@ -72,8 +69,6 @@ public class Fish {
         // downscale width/height
         width = (int) (WIDTH * 0.40);
         height = (int) (HEIGHT * 0.40);
-
-        singleWidth = WIDTH / spritesheetData.length;
     }
 
     // check boundaries and change heading if at the edge
