@@ -16,9 +16,10 @@ import com.tropicalbastos.boids.objects.Fish;
 public class Renderer extends Canvas implements MouseListener {
 
     private ArrayList<Drawable> drawables;
+    private final int BACKGROUND_COLOUR = 0x5d99dd;
 
     public Renderer() {
-        setBackground(new Color(0x006994));
+        setBackground(new Color(BACKGROUND_COLOUR));
         addMouseListener(this);
         drawables = new ArrayList<>();
     }
