@@ -12,13 +12,14 @@ import com.tropicalbastos.boids.animation.Spritesheet;
 import com.tropicalbastos.boids.core.Renderer;
 import com.tropicalbastos.boids.animation.Sheet;
 
-public class Fish {
+public class Fish implements Drawable {
 
     private final int WIDTH = 109;
     private final int HEIGHT = 89;
     private final long ANIMATION_DELTA = 50; // millieseconds between each sheet change
     private final int SPEED = 7;
     private final int ANGLE_LIMIT = 360;
+    public static final String FISH_TAG = "FISH";
 
     private int[][] spritesheetData = {{0, 0, WIDTH, HEIGHT}, {109, 0, WIDTH, HEIGHT}, {218, 0, WIDTH, HEIGHT},
                                    {327, 0, WIDTH, HEIGHT}, {436, 0, WIDTH, HEIGHT}, {545, 0, WIDTH, HEIGHT}};
@@ -250,6 +251,10 @@ public class Fish {
         Image resultDrawable = clippedDrawable.getScaledInstance(width, height, 0);
 
         g.drawImage(resultDrawable, posX, posY, null);
+    }
+
+    public String getTag() {
+        return FISH_TAG;
     }
 
 }

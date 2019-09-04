@@ -8,13 +8,19 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import com.tropicalbastos.boids.objects.Drawable;
 import com.tropicalbastos.boids.objects.Fish;
 
 public class Renderer extends Canvas implements MouseListener {
 
+    private ArrayList<Drawable> drawables;
+
     public Renderer() {
         setBackground(new Color(0x006994));
         addMouseListener(this);
+        drawables = new ArrayList<>();
     }
 
     public void pack() {
@@ -22,10 +28,36 @@ public class Renderer extends Canvas implements MouseListener {
         setSize(dimension);
     }
 
+    public void addDrawable(Drawable d) {
+        drawables.add(d);
+    }
+
+    public void removeDrawable(Drawable d) {
+        drawables = (ArrayList<Drawable>) 
+            drawables
+                .stream()
+                .filter(d2 -> !d2.equals(d))
+                .collect(Collectors.toList());
+    }
+
+    public void removeDrawablesOfTag(String tag) {
+        drawables = (ArrayList<Drawable>) 
+            drawables
+                .stream()
+                .filter(d2 -> d2.getTag() != tag)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
 
+        // draw our inanimate components first
+        for (Drawable drawable : drawables) {
+            drawable.draw(g);
+        }
+
+        // then our animate fish
         ArrayList<Fish> fish = Simulation.getInstance().getFish();
         for (Fish f : fish) {
             f.draw(g);
