@@ -2,6 +2,7 @@ package com.tropicalbastos.boids.objects;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -40,6 +41,7 @@ public class Fish implements Drawable {
     private long lastTimeHeadingChanged;
     private boolean targetSpeedHit;
     private boolean targetHeadingHit;
+    public boolean inFlock;
 
     public Fish(int startPosX, int startPosY, Renderer context) {
         this.context = context;
@@ -66,6 +68,7 @@ public class Fish implements Drawable {
 
         targetSpeedHit = true;
         targetHeadingHit = true;
+        inFlock = false;
 
         // downscale width/height
         width = (int) (WIDTH * 0.40);
@@ -154,7 +157,7 @@ public class Fish implements Drawable {
     public void move() {
         boolean headingChanged = checkBoundaries();
         if (!headingChanged) {
-            if (canChangeHeading() && targetHeadingHit)
+            if (canChangeHeading() && targetHeadingHit && !inFlock)
                 changeHeading(); 
         }
 
@@ -162,6 +165,27 @@ public class Fish implements Drawable {
 
         posX += speed * Math.cos(heading * Math.PI / 180);
         posY += speed * Math.sin(heading * Math.PI / 180);
+    }
+
+    public double getAngleFromPoint(Point firstPoint, Point secondPoint) {
+        if((secondPoint.x > firstPoint.x)) {
+            return (Math.atan2((secondPoint.x - firstPoint.x), (firstPoint.y - secondPoint.y)) * 180 / Math.PI);
+        }
+        else if((secondPoint.x < firstPoint.x)) {
+            return 360 - (Math.atan2((firstPoint.x - secondPoint.x), (firstPoint.y - secondPoint.y)) * 180 / Math.PI);
+        }
+    
+        return Math.atan2(0 ,0);
+    }
+
+    public Point getPos() {
+        return new Point(posX, posY);
+    }
+
+    public void move(Point center) {
+        targetHeading = (int) getAngleFromPoint(getPos(), center);
+        targetHeadingHit = false;
+        move();
     }
 
     public void animate() {

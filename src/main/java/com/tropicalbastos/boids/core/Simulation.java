@@ -1,6 +1,8 @@
 package com.tropicalbastos.boids.core;
 
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import com.tropicalbastos.boids.objects.Fish;
 
 public class Simulation {
@@ -8,6 +10,8 @@ public class Simulation {
     private ArrayList<Fish> fish;
     private static Simulation instance;
     private static boolean initialised = false;
+
+    private final int DETECTION_RADIUS = 100;
 
     public boolean isRunning;
 
@@ -37,12 +41,70 @@ public class Simulation {
         this.fish.add(_fish);
     }
 
+    public ArrayList<Fish> detectedFish(Fish currentFish) {
+        return (ArrayList<Fish>) fish.stream().filter(fi -> {
+            if (currentFish == fi)
+                return false;
+
+            int fxMin = fi.posX - DETECTION_RADIUS;
+            int fyMin = fi.posY - DETECTION_RADIUS;
+            int fxMax = fi.posX + DETECTION_RADIUS;
+            int fyMax = fi.posY + DETECTION_RADIUS;
+            int currentFishX = currentFish.posX;
+            int currentFishY = currentFish.posY;
+
+            if (currentFishX <= fxMax && currentFishX >= fxMin &&
+                currentFishY <= fyMax && currentFishY >= fyMin) {
+                    return true;
+                }
+
+            return false;
+        }).collect(Collectors.toList());
+    }
+
+    public Point centerPoint(ArrayList<Fish> fishArr) {
+        Point center = new Point(0, 0);
+        int[] xPositions = new int[fishArr.size()];
+        int[] yPositions = new int[fishArr.size()];
+        int averageX = 0;
+        int averageY = 0;
+
+        for (int i = 0; i < fishArr.size(); i++) {
+            Fish f = fishArr.get(i);
+            xPositions[i] = f.posX;
+            yPositions[i] = f.posX;
+        }
+
+        for (int i = 0; i < fishArr.size(); i++) {
+            averageX += xPositions[i];
+            averageY += yPositions[i];
+        }
+
+        averageX = averageX / xPositions.length;
+        averageY = averageY / yPositions.length;
+        
+        center.x = averageX;
+        center.y = averageY;
+
+        return center;
+    }
+
     public synchronized void onProcess() {
         int count = fish.size();
 
         // need to update reference to fish
         for (int i = 0; i < count; i++) {
-            fish.get(i).move();
+            Fish f = fish.get(i);
+            ArrayList<Fish> detected = detectedFish(f);
+
+            if (detected.size() == 0) {
+                f.inFlock = false;
+                f.move();
+            } else {
+                Point center = centerPoint(detected);
+                f.inFlock = true;
+                f.move(center);
+            }
         }
     }
     
