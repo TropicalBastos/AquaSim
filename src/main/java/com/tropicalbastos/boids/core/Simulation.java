@@ -11,7 +11,7 @@ public class Simulation {
     private static Simulation instance;
     private static boolean initialised = false;
 
-    private final int DETECTION_RADIUS = 100;
+    private final int DETECTION_RADIUS = 400;
 
     public boolean isRunning;
 
@@ -89,6 +89,18 @@ public class Simulation {
         return center;
     }
 
+    public int calculateAverageHeading(ArrayList<Fish> fishArr) {
+        int heading = 0;
+
+        for (Fish f : fishArr) {
+            heading += f.heading;
+        }
+
+        heading = heading / fishArr.size();
+
+        return heading;
+    }
+
     public synchronized void onProcess() {
         int count = fish.size();
 
@@ -102,8 +114,9 @@ public class Simulation {
                 f.move();
             } else {
                 Point center = centerPoint(detected);
+                int averageHeading = calculateAverageHeading(detected);
                 f.inFlock = true;
-                f.move(center);
+                f.move(center, averageHeading);
             }
         }
     }

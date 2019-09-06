@@ -182,8 +182,8 @@ public class Fish implements Drawable {
         return new Point(posX, posY);
     }
 
-    public void move(Point center) {
-        targetHeading = (int) getAngleFromPoint(getPos(), center);
+    public void move(Point center, int averageHeading) {
+        targetHeading = averageHeading;
         targetHeadingHit = false;
         move();
     }
