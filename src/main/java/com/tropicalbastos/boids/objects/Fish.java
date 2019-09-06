@@ -101,13 +101,24 @@ public class Fish implements Drawable {
         }
 
         if ((posY + sprite.getHeight()) > context.getHeight()) {
-            heading = 270;
+            double rand = Math.random();
+            if (rand < 0.5)
+                heading = 340;
+            else
+                heading = 200;
+                
+            targetHeading = heading;
             headingChanged = true;
         }
 
         if (posY < 0) {
-            heading = 90;
-            targetHeading = 90;
+            double rand = Math.random();
+            if (rand < 0.5)
+                heading = 20;
+            else
+                heading = 140;
+
+            targetHeading = heading;
             headingChanged = true;
         }
 
