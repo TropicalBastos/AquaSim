@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import com.tropicalbastos.boids.objects.Fish;
 import com.tropicalbastos.boids.objects.FloorTile;
+import com.tropicalbastos.boids.objects.Tiki;
 
 public class Window extends JFrame implements ComponentListener {
 
@@ -21,6 +22,7 @@ public class Window extends JFrame implements ComponentListener {
         renderer = new Renderer();
         add(renderer);
         createFloor();
+        createTiki();
         renderer.pack();
 
         renderer.setVisible(true);
@@ -47,6 +49,17 @@ public class Window extends JFrame implements ComponentListener {
         t.start();
     }
 
+    public void createTiki() {
+        renderer.removeDrawablesOfTag(Tiki.TIKI_TAG);
+        int w = getWidth();
+        int h = getHeight();
+        int tikiWidth = w / 8;
+        int tikiHeight = tikiWidth;
+        int tikiPosX = w - (w / 4);
+        int tikiPosY = h - (tikiHeight + 50);
+        renderer.addDrawable(new Tiki(tikiWidth, tikiHeight, tikiPosX, tikiPosY));
+    }
+
     public void createFloor() {
         renderer.removeDrawablesOfTag(FloorTile.FLOOR_TILE_TAG);
 
@@ -71,6 +84,7 @@ public class Window extends JFrame implements ComponentListener {
     @Override
     public void componentResized(ComponentEvent e) {
         createFloor();
+        createTiki();
     }
 
     @Override
