@@ -5,13 +5,16 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import com.tropicalbastos.boids.objects.Fish;
 import com.tropicalbastos.boids.objects.FloorTile;
 import com.tropicalbastos.boids.objects.Tiki;
+import com.tropicalbastos.boids.widgets.OptionsMenu;
 
 public class Window extends JFrame implements ComponentListener {
 
     private Renderer renderer;
+    private JMenuBar menuBar;
     private final int NUM_FLOOR_TILES = 4;
     private final int FLOOR_TILE_HEIGHT = 50;
 
@@ -19,10 +22,15 @@ public class Window extends JFrame implements ComponentListener {
         setSize(1000, 400);
         setTitle("Boids");
 
+        // set up menu
+        menuBar = new JMenuBar();
+        menuBar.add(new OptionsMenu());
+        setJMenuBar(menuBar);
+
         renderer = new Renderer();
         add(renderer);
-        createFloor();
         createTiki();
+        createFloor();
         renderer.pack();
 
         renderer.setVisible(true);
@@ -56,7 +64,7 @@ public class Window extends JFrame implements ComponentListener {
         int tikiWidth = w / 8;
         int tikiHeight = tikiWidth;
         int tikiPosX = w - (w / 4);
-        int tikiPosY = h - (tikiHeight + 50);
+        int tikiPosY = h - (tikiHeight + 70);
         renderer.addDrawable(new Tiki(tikiWidth, tikiHeight, tikiPosX, tikiPosY));
     }
 
@@ -68,7 +76,7 @@ public class Window extends JFrame implements ComponentListener {
         int floorTileHeight = FLOOR_TILE_HEIGHT;
 
         int floorTileX = 0;
-        int floorTileY = getHeight() - floorTileHeight;
+        int floorTileY = (getHeight() - menuBar.getHeight()) - floorTileHeight;
 
         for (int i = 0; i <= NUM_FLOOR_TILES; i++) {
             FloorTile floorTile = new FloorTile(floorTileWidth, floorTileHeight, floorTileX, floorTileY);
@@ -83,8 +91,8 @@ public class Window extends JFrame implements ComponentListener {
 
     @Override
     public void componentResized(ComponentEvent e) {
-        createFloor();
         createTiki();
+        createFloor();
     }
 
     @Override
