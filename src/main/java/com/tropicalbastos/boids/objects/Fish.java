@@ -198,7 +198,7 @@ public class Fish implements Drawable {
     public void move() {
         boolean headingChanged = checkBoundaries();
         if (!headingChanged) {
-            if (canChangeHeading() && targetHeadingHit && !inFlock)
+            if (canChangeHeading())
                 changeHeading(); 
         }
 
