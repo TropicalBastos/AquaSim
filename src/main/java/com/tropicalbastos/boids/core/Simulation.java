@@ -11,7 +11,7 @@ public class Simulation {
     private static Simulation instance;
     private static boolean initialised = false;
 
-    private final int DETECTION_RADIUS = 400;
+    private final int DETECTION_RADIUS = 200;
 
     public boolean isRunning;
 
@@ -72,7 +72,7 @@ public class Simulation {
         for (int i = 0; i < fishArr.size(); i++) {
             Fish f = fishArr.get(i);
             xPositions[i] = f.posX;
-            yPositions[i] = f.posX;
+            yPositions[i] = f.posY;
         }
 
         for (int i = 0; i < fishArr.size(); i++) {

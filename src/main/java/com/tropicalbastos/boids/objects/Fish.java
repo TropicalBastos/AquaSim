@@ -178,25 +178,38 @@ public class Fish implements Drawable {
         posY += speed * Math.sin(heading * Math.PI / 180);
     }
 
-    public double getAngleFromPoint(Point firstPoint, Point secondPoint) {
-        if((secondPoint.x > firstPoint.x)) {
-            return (Math.atan2((secondPoint.x - firstPoint.x), (firstPoint.y - secondPoint.y)) * 180 / Math.PI);
-        }
-        else if((secondPoint.x < firstPoint.x)) {
-            return 360 - (Math.atan2((firstPoint.x - secondPoint.x), (firstPoint.y - secondPoint.y)) * 180 / Math.PI);
-        }
-    
-        return Math.atan2(0 ,0);
+    public double getHeadingFromPoint(Point other) {
+        Point pos = getPos();
+        double direction = Math.atan2(0 ,0);
+        direction = Math.toDegrees(Math.atan2(pos.y - other.y, pos.x - other.x));
+        return Math.abs(direction);
     }
 
     public Point getPos() {
         return new Point(posX, posY);
     }
 
+    public long normalizeHeading(long aHeading) {
+        return (aHeading < 0) ? 360 - aHeading : (aHeading > 360) ? aHeading - 360 : aHeading;
+    }
+
+    public void moveTowards(Point point) {
+        if (posX < point.x)
+            posX++;
+        else if (posX > point.x)
+            posX--;
+        
+        if (posY < point.y)
+            posY++;
+        else if (posY > point.y)
+            posY--;
+    }
+
     public void move(Point center, int averageHeading) {
         targetHeading = averageHeading;
         targetHeadingHit = false;
         move();
+        moveTowards(center);
     }
 
     public void animate() {
