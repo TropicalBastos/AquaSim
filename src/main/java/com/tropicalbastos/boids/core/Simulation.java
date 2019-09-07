@@ -1,6 +1,7 @@
 package com.tropicalbastos.boids.core;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import com.tropicalbastos.boids.objects.Fish;
@@ -14,6 +15,7 @@ public class Simulation {
     private final int DETECTION_RADIUS = 200;
 
     public boolean isRunning;
+    private ArrayList<Rectangle> occupiedRects; // occupied points in simulation
 
     private Simulation() {
         isRunning = true;
@@ -39,6 +41,10 @@ public class Simulation {
 
     public synchronized void addFish(Fish _fish) {
         this.fish.add(_fish);
+    }
+
+    public ArrayList<Rectangle> getOccupiedRects() {
+        return occupiedRects;
     }
 
     public ArrayList<Fish> detectedFish(Fish currentFish) {
@@ -89,6 +95,17 @@ public class Simulation {
         return center;
     }
 
+    public void fillOccupiedRects() {
+        occupiedRects = (ArrayList<Rectangle>) fish.stream().map(f -> {
+            Rectangle rect = new Rectangle();
+            rect.x = f.posX - (f.getWidth() / 2);
+            rect.y = f.posY - (f.getHeight() / 2);
+            rect.width = f.getWidth();
+            rect.height = f.getHeight();
+            return rect;
+        }).collect(Collectors.toList());
+    }
+
     public int calculateAverageHeading(ArrayList<Fish> fishArr) {
         int heading = 0;
 
@@ -106,6 +123,9 @@ public class Simulation {
 
         // need to update reference to fish
         for (int i = 0; i < count; i++) {
+            // need to reshape occupied rects after each move call
+            fillOccupiedRects();
+
             Fish f = fish.get(i);
             ArrayList<Fish> detected = detectedFish(f);
 

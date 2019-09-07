@@ -3,14 +3,17 @@ package com.tropicalbastos.boids.objects;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import com.tropicalbastos.boids.animation.Spritesheet;
 import com.tropicalbastos.boids.core.Renderer;
+import com.tropicalbastos.boids.core.Simulation;
 import com.tropicalbastos.boids.animation.Sheet;
 
 public class Fish implements Drawable {
@@ -73,6 +76,14 @@ public class Fish implements Drawable {
         // downscale width/height
         width = (int) (WIDTH * 0.40);
         height = (int) (HEIGHT * 0.40);
+    }
+
+    public int getWidth() {
+        return sprite.getWidth() / spritesheetData.length;
+    }
+
+    public int getHeight() {
+        return sprite.getHeight();
     }
 
     // check boundaries and change heading if at the edge
@@ -165,6 +176,25 @@ public class Fish implements Drawable {
         }
     }
 
+    public boolean isOccupiedSpace(int x, int y) {
+        Simulation sim = Simulation.getInstance();
+        ArrayList<Rectangle> rects = sim.getOccupiedRects();
+
+        // if more than 1 collision is detected then the space is occupied
+        // this is because the first collision is the current fish
+        int collisions = 0;
+
+        for (Rectangle rect : rects) {
+            if (rect.contains(x, y))
+                collisions++;
+
+            if (collisions > 1)
+                return true;
+        }
+
+        return false;
+    }
+
     public void move() {
         boolean headingChanged = checkBoundaries();
         if (!headingChanged) {
@@ -174,8 +204,11 @@ public class Fish implements Drawable {
 
         changeSpeed();
 
-        posX += speed * Math.cos(heading * Math.PI / 180);
-        posY += speed * Math.sin(heading * Math.PI / 180);
+        int potentialX = posX + (int) (speed * Math.cos(heading * Math.PI / 180));
+        int potentialY = posY + (int) (speed * Math.sin(heading * Math.PI / 180));
+
+        posX = potentialX;
+        posY = potentialY;
     }
 
     public double getHeadingFromPoint(Point other) {
@@ -194,15 +227,24 @@ public class Fish implements Drawable {
     }
 
     public void moveTowards(Point point) {
+        int potentialX = posX;
+        int potentialY = posY;
+
         if (posX < point.x)
-            posX++;
+            potentialX++;
         else if (posX > point.x)
-            posX--;
+            potentialX--;
         
         if (posY < point.y)
-            posY++;
+            potentialY++;
         else if (posY > point.y)
-            posY--;
+            potentialY--;
+
+        if (isOccupiedSpace(potentialX, potentialY))
+            return;
+
+        posX = potentialX;
+        posY = potentialY;
     }
 
     public void move(Point center, int averageHeading) {
