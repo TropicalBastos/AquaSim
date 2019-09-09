@@ -13,6 +13,13 @@ public class OptionsMenu extends JMenu {
 
         JMenuItem helpItem = new JMenuItem();
         helpItem.setText("Help");
+        helpItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                HelpWindow helpWin = new HelpWindow();
+                helpWin.setVisible(true);
+            }
+        });
 
         JMenuItem quitItem = new JMenuItem();
         quitItem.setText("Quit");
