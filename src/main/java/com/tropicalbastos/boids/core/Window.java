@@ -9,6 +9,7 @@ import javax.swing.JMenuBar;
 import com.tropicalbastos.boids.objects.Fish;
 import com.tropicalbastos.boids.objects.FloorTile;
 import com.tropicalbastos.boids.objects.Tiki;
+import com.tropicalbastos.boids.widgets.Cursor;
 import com.tropicalbastos.boids.widgets.OptionsMenu;
 
 public class Window extends JFrame implements ComponentListener {
@@ -29,6 +30,7 @@ public class Window extends JFrame implements ComponentListener {
 
         renderer = new Renderer();
         add(renderer);
+        renderer.addDrawable(new Cursor(this));
         createTiki();
         createFloor();
         renderer.pack();
