@@ -20,7 +20,7 @@ public class Window extends JFrame implements ComponentListener {
 
     public Window() {
         setSize(1000, 400);
-        setTitle("Boids");
+        setTitle("Aqua Sim");
 
         // set up menu
         menuBar = new JMenuBar();

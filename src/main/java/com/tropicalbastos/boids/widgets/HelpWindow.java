@@ -36,7 +36,7 @@ public class HelpWindow extends JFrame {
     }
 
     public void initText() {
-        JLabel title = new JLabel("Welcome to Aquarium Simulator", JLabel.CENTER);
+        JLabel title = new JLabel("Welcome to Aqua Sim", JLabel.CENTER);
         title.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 18));
 
         JPanel titlePane = new JPanel();
