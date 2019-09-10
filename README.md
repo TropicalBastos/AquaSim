@@ -16,4 +16,4 @@ And the executable will be built in build/libs.
 
 ## Example
 
-<img src="resources/example.gif">
+<img src="static/example.gif">
