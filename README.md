@@ -1,6 +1,6 @@
 # Aqua Sim
 
-Aqua Sim is a simple aquarium simulator that adopts the principles from Boids to simulate a flocking artificial life program. To add more fish into the aquarium simple click on where you would like the fish to spawn and it will do so.
+Aqua Sim is a simple aquarium simulator that adopts the principles of Boids to simulate a flocking artificial life program. To add more fish into the aquarium simple click on where you would like the fish to spawn and it will do so.
 
 ## Building
 
