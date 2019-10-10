@@ -2,9 +2,7 @@ package com.tropicalbastos.boids.settings;
 
 public final class Platform {
    private static String OS = null;
-   public static String getOsName()
-
-   {
+   public static String getOsName() {
       if(OS == null) { 
          OS = System.getProperty("os.name"); 
       }
