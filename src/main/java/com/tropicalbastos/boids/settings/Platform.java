@@ -9,11 +9,7 @@ public final class Platform {
       return OS;
    }
    
-   public static boolean isWindows() {
-      return getOsName().startsWith("Windows");
-   }
-
    public static boolean isMac() {
-      return getOsName().startsWith("mac");
-   }
+		return (getOsName().toLowerCase().indexOf("mac") >= 0);
+	}
 }
