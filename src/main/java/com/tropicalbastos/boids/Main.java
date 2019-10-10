@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import com.tropicalbastos.boids.core.Simulation;
 import com.tropicalbastos.boids.core.Window;
+import com.tropicalbastos.boids.settings.Platform;;
 
 public class Main {
 
@@ -23,7 +24,10 @@ public class Main {
 	public static void main(String[] passedArgs) {
         // because getClass doesn't work in a static context
         Main m = new Main();
-        m.setDockIcon();
+        
+        if (Platform.isMac()){
+            m.setDockIcon();
+        }
 
         // create an instance before summoning the main window
         Simulation.getInstance();
