@@ -20,12 +20,12 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
-  
-	public static void main(String[] passedArgs) {
+
+    public static void main(String[] passedArgs) {
         // because getClass doesn't work in a static context
         Main m = new Main();
-        
-        if (Platform.isMac()){
+
+        if (Platform.isMac()) {
             m.setDockIcon();
         }
 
