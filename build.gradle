@@ -7,20 +7,24 @@ jar {
     }
 }
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 version = '1.0.0'
 
 repositories {
-    jcenter()
+    mavenCentral()
+    google()
 }
 
 dependencies {
-  testCompile 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.12'
 }
 
 task runJar(type: JavaExec) {
-   classpath = files('build/libs/' + project.name + 'jar')
-   classpath += sourceSets.main.runtimeClasspath
-   main = 'com.tropicalbastos.boids.Main'
+    mainClass = 'com.tropicalbastos.boids.Main'
+    classpath = files('build/libs/' + project.name + 'jar')
+    classpath += sourceSets.main.runtimeClasspath
 }
